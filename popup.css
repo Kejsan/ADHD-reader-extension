@@ -1,0 +1,98 @@
+:root {
+  color-scheme: light;
+  --bg-top: #f7f1e8;
+  --bg-bottom: #eadfca;
+  --panel: rgba(255, 252, 246, 0.92);
+  --ink: #211c17;
+  --muted: #6a6257;
+  --accent: #c65d2e;
+  --accent-dark: #8f3f1c;
+  --edge: rgba(33, 28, 23, 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: Georgia, "Palatino Linotype", serif;
+  background:
+    radial-gradient(circle at top left, rgba(198, 93, 46, 0.18), transparent 34%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  color: var(--ink);
+}
+
+.popup {
+  width: 340px;
+  padding: 16px;
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.popup::after {
+  content: "Focus anchors for faster scanning";
+  display: block;
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.row,
+.stack {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 10px 30px rgba(82, 60, 41, 0.08);
+}
+
+.toggle-row {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+button {
+  flex: 1;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  color: #fffdf8;
+}
+
+button.ghost {
+  background: rgba(255, 252, 246, 0.76);
+  border-color: var(--edge);
+  color: var(--ink);
+}
+
+.hint {
+  margin: 12px 2px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
+}

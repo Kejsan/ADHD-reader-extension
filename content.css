@@ -1,0 +1,13 @@
+.adhd-focus-reader-word {
+  display: inline;
+}
+
+.adhd-focus-reader-prefix {
+  font-weight: 800;
+  color: inherit;
+}
+
+html.adhd-focus-reader-active body {
+  line-height: var(--adhd-reader-line-height, inherit);
+  letter-spacing: var(--adhd-reader-letter-spacing, normal);
+}

@@ -1,0 +1,42 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADHD Focus Reader</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <h1>ADHD Focus Reader</h1>
+
+      <label class="row toggle-row">
+        <span>Enable on this tab</span>
+        <input id="enabled" type="checkbox" />
+      </label>
+
+      <label class="stack">
+        <span>Word emphasis: <strong id="intensityValue">40%</strong></span>
+        <input id="intensity" type="range" min="20" max="70" step="5" />
+      </label>
+
+      <label class="stack">
+        <span>Line spacing</span>
+        <input id="lineHeight" type="range" min="1.2" max="2" step="0.1" />
+      </label>
+
+      <label class="stack">
+        <span>Letter spacing</span>
+        <input id="letterSpacing" type="range" min="0" max="0.08" step="0.01" />
+      </label>
+
+      <div class="actions">
+        <button id="apply" type="button">Apply</button>
+        <button id="reset" type="button" class="ghost">Reset</button>
+      </div>
+
+      <p class="hint">This tool is a reading aid and not a medical treatment.</p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
