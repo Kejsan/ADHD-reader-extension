@@ -10,7 +10,7 @@ Chrome extension for applying a focus-reading treatment to article text, a manua
 - `This tab` and `This site` now behave separately
 - Page analysis warns when article detection confidence is low
 - Reset only affects the current tab session
-- Optional analytics are aggregate-only and off by default
+- Optional analytics are local-only, aggregate-only, and off by default
 
 ## Modes
 
@@ -25,19 +25,20 @@ Chrome extension for applying a focus-reading treatment to article text, a manua
 
 ## Privacy-safe analytics
 
-- Enabled by default and announced on first install
+- Disabled by default and can be turned on from the popup
 - Controlled at any time from the popup analytics toggle
 - Visible inside the popup as local usage totals and mode/site/page counts
 - Tracks aggregate counts such as applies, resets, modes used, and counts of unique sites/pages
 - Uses local salted hashes for distinct-site and distinct-page counts
 - Does not store or transmit raw URLs, page text, or selected content
+- Does not send analytics to a remote server
 
 ## Local install
 
 1. Open `chrome://extensions`
 2. Turn on `Developer mode`
 3. Click `Load unpacked`
-4. Choose the `adhd-focus-reader-extension` folder
+4. Choose the `ADHD-reader-extension` folder
 
 ## Suggested test pages
 

@@ -3,20 +3,18 @@ const SITE_PREFERENCES_KEY = "sitePreferences";
 const TAB_STATES_KEY = "tabStates";
 const ANALYTICS_SETTINGS_KEY = "analyticsSettings";
 const ANALYTICS_STATE_KEY = "analyticsState";
-const ANALYTICS_ENDPOINT = "";
 const INSTALL_NOTICE_KEY = "installNoticePending";
 
 const DEFAULTS = {
   defaultMode: "article",
   defaultPersistence: "tab",
-  analyticsEnabled: true,
+  analyticsEnabled: false,
   intensity: 40,
   lineHeight: 1.6,
   letterSpacing: 0.02
 };
 
 const DEFAULT_ANALYTICS_STATE = {
-  installId: "",
   salt: "",
   totals: {
     applies: 0,
@@ -35,8 +33,7 @@ const DEFAULT_ANALYTICS_STATE = {
     site: 0
   },
   uniqueHostHashes: [],
-  uniquePageHashes: [],
-  queue: []
+  uniquePageHashes: []
 };
 
 function getHostname(url) {
@@ -116,12 +113,10 @@ function buildResolvedState({ userDefaults, sitePreferences, tabStates, tabId, u
 async function getAnalyticsState() {
   const result = await chrome.storage.local.get(ANALYTICS_STATE_KEY);
   const stored = result[ANALYTICS_STATE_KEY] || {};
-  const installId = stored.installId || crypto.randomUUID();
   const salt = stored.salt || crypto.randomUUID();
   const state = {
     ...DEFAULT_ANALYTICS_STATE,
     ...stored,
-    installId,
     salt,
     totals: {
       ...DEFAULT_ANALYTICS_STATE.totals,
@@ -136,11 +131,10 @@ async function getAnalyticsState() {
       ...(stored.persistence || {})
     },
     uniqueHostHashes: stored.uniqueHostHashes || [],
-    uniquePageHashes: stored.uniquePageHashes || [],
-    queue: stored.queue || []
+    uniquePageHashes: stored.uniquePageHashes || []
   };
 
-  if (!stored.installId || !stored.salt) {
+  if (!stored.salt) {
     await chrome.storage.local.set({ [ANALYTICS_STATE_KEY]: state });
   }
 
@@ -164,40 +158,7 @@ async function getAnalyticsSummary() {
     modes: analyticsState.modes,
     persistence: analyticsState.persistence,
     uniqueSites: analyticsState.uniqueHostHashes.length,
-    uniquePages: analyticsState.uniquePageHashes.length,
-    queuedBatches: analyticsState.queue.length
-  };
-}
-
-async function flushAnalyticsIfConfigured(state) {
-  if (!ANALYTICS_ENDPOINT || !state.queue.length) {
-    return state;
-  }
-
-  try {
-    const response = await fetch(ANALYTICS_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        installId: state.installId,
-        batches: state.queue
-      })
-    });
-
-    if (!response.ok) {
-      return state;
-    }
-
-    const nextState = {
-      ...state,
-      queue: []
-    };
-    await chrome.storage.local.set({ [ANALYTICS_STATE_KEY]: nextState });
-    return nextState;
-  } catch (_error) {
-    return state;
+    uniquePages: analyticsState.uniquePageHashes.length
   }
 }
 
@@ -259,19 +220,7 @@ async function trackAnalyticsEvent(payload) {
     }
   }
 
-  nextState.queue = [
-    ...nextState.queue,
-    {
-      timestamp: Date.now(),
-      event: payload.event,
-      mode: payload.mode || null,
-      persistence: payload.persistence || null,
-      analysisStatus: payload.analysisStatus || null
-    }
-  ].slice(-100);
-
   await chrome.storage.local.set({ [ANALYTICS_STATE_KEY]: nextState });
-  await flushAnalyticsIfConfigured(nextState);
 
   return {
     ok: true,
@@ -298,21 +247,43 @@ async function setAnalyticsEnabled(enabled) {
 }
 
 chrome.runtime.onInstalled.addListener(async (details) => {
-  const syncState = await getSyncState();
-  const nextDefaults = {
-    ...syncState.userDefaults,
-    analyticsEnabled: true
-  };
+  const syncValues = await chrome.storage.sync.get([USER_DEFAULTS_KEY, ANALYTICS_SETTINGS_KEY]);
+  const writes = [];
 
-  await Promise.all([
-    chrome.storage.sync.set({
-      [USER_DEFAULTS_KEY]: nextDefaults,
-      [ANALYTICS_SETTINGS_KEY]: { enabled: true }
-    }),
-    chrome.storage.local.set({
-      [INSTALL_NOTICE_KEY]: true
-    })
-  ]);
+  if (details.reason === "install") {
+    writes.push(
+      chrome.storage.sync.set({
+        [USER_DEFAULTS_KEY]: {
+          ...DEFAULTS
+        },
+        [ANALYTICS_SETTINGS_KEY]: { enabled: DEFAULTS.analyticsEnabled }
+      }),
+      chrome.storage.local.set({
+        [INSTALL_NOTICE_KEY]: true
+      })
+    );
+  } else {
+    const syncUpdate = {};
+
+    if (!syncValues[USER_DEFAULTS_KEY]) {
+      syncUpdate[USER_DEFAULTS_KEY] = { ...DEFAULTS };
+    }
+
+    if (!syncValues[ANALYTICS_SETTINGS_KEY]) {
+      syncUpdate[ANALYTICS_SETTINGS_KEY] = {
+        enabled:
+          syncValues[USER_DEFAULTS_KEY]?.analyticsEnabled ?? DEFAULTS.analyticsEnabled
+      };
+    }
+
+    if (Object.keys(syncUpdate).length > 0) {
+      writes.push(chrome.storage.sync.set(syncUpdate));
+    }
+  }
+
+  if (writes.length > 0) {
+    await Promise.all(writes);
+  }
 
   if (details.reason === "install") {
     await chrome.tabs.create({

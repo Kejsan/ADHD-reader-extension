@@ -93,7 +93,7 @@ function renderAnalyticsSummary(summary) {
   analyticsEnabledInput.checked = Boolean(summary?.enabled);
 
   if (!summary?.enabled) {
-    analyticsSummary.textContent = "Analytics are off.";
+    analyticsSummary.textContent = "Analytics are off. Turn them on to keep local-only aggregate usage counts.";
     analyticsStats.classList.add("hidden");
     return;
   }

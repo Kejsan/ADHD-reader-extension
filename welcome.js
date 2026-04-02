@@ -1,5 +1,5 @@
-const openPopupButton = document.getElementById("openPopup");
-const disableAnalyticsButton = document.getElementById("disableAnalytics");
+const closeWelcomeButton = document.getElementById("closeWelcome");
+const enableAnalyticsButton = document.getElementById("enableAnalytics");
 
 async function dismissNotice() {
   await chrome.runtime.sendMessage({
@@ -7,17 +7,17 @@ async function dismissNotice() {
   });
 }
 
-openPopupButton.addEventListener("click", async () => {
+closeWelcomeButton.addEventListener("click", async () => {
   await dismissNotice();
   window.close();
 });
 
-disableAnalyticsButton.addEventListener("click", async () => {
+enableAnalyticsButton.addEventListener("click", async () => {
   await chrome.runtime.sendMessage({
     type: "SET_ANALYTICS_ENABLED",
-    enabled: false
+    enabled: true
   });
   await dismissNotice();
-  disableAnalyticsButton.textContent = "Analytics turned off";
-  disableAnalyticsButton.disabled = true;
+  enableAnalyticsButton.textContent = "Analytics enabled";
+  enableAnalyticsButton.disabled = true;
 });
