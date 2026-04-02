@@ -1,13 +1,31 @@
-﻿{
+{
   "manifest_version": 3,
   "name": "ADHD Focus Reader",
-  "version": "0.1.0",
-  "description": "Improve readability by emphasizing the first part of words in article-like text.",
-  "permissions": ["storage", "activeTab"],
+  "version": "0.2.0",
+  "description": "Apply ADHD-friendly focus reading to articles, selected content, or page text without rewriting the whole site UI.",
+  "permissions": ["storage", "activeTab", "tabs"],
   "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_title": "ADHD Focus Reader",
     "default_popup": "popup.html"
+  },
+  "commands": {
+    "start-manual-selection": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Start manual content selection"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "content_scripts": [
     {

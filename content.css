@@ -1,7 +1,3 @@
-.adhd-focus-reader-word {
-  display: inline;
-}
-
 .adhd-focus-reader-prefix {
   font-weight: 800;
   color: inherit;
@@ -10,4 +6,19 @@
 html.adhd-focus-reader-active body {
   line-height: var(--adhd-reader-line-height, inherit);
   letter-spacing: var(--adhd-reader-letter-spacing, normal);
+}
+
+[data-adhd-focus-reader-pickable="true"] {
+  position: relative;
+  z-index: 2147483000;
+}
+
+.adhd-focus-reader-highlight {
+  position: absolute;
+  z-index: 2147483647;
+  pointer-events: none;
+  border: 3px solid rgba(198, 93, 46, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 0 0 9999px rgba(33, 28, 23, 0.16);
+  transition: top 80ms ease, left 80ms ease, width 80ms ease, height 80ms ease;
 }

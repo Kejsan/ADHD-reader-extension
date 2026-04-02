@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -8,34 +8,162 @@
   </head>
   <body>
     <main class="popup">
-      <h1>ADHD Focus Reader</h1>
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Focus Reader</p>
+          <h1>ADHD Focus Reader</h1>
+          <p class="subhead">Aim the effect at readable content, not the whole interface.</p>
+        </div>
+        <div class="hero-mark" aria-hidden="true">F</div>
+      </header>
 
-      <label class="row toggle-row">
-        <span>Enable on this tab</span>
-        <input id="enabled" type="checkbox" />
-      </label>
+      <nav class="top-tabs" aria-label="Popup sections">
+        <button id="tabRead" class="top-tab active" type="button" data-tab="read">Read</button>
+        <button id="tabSettings" class="top-tab" type="button" data-tab="settings">Settings</button>
+      </nav>
 
-      <label class="stack">
-        <span>Word emphasis: <strong id="intensityValue">40%</strong></span>
-        <input id="intensity" type="range" min="20" max="70" step="5" />
-      </label>
+      <section id="panelRead" class="tab-panel">
+        <section class="panel status-panel">
+          <div class="status-line">
+            <span class="status-label">Page analysis</span>
+            <span id="statusChip" class="chip">Checking</span>
+          </div>
+          <p id="statusText" class="status-text">Inspecting the active page.</p>
+        </section>
 
-      <label class="stack">
-        <span>Line spacing</span>
-        <input id="lineHeight" type="range" min="1.2" max="2" step="0.1" />
-      </label>
+        <section class="panel">
+          <p class="section-title">Apply mode</p>
+          <div class="choice-grid" role="radiogroup" aria-label="Apply mode">
+            <label class="choice-card">
+              <input type="radio" name="mode" value="article" checked />
+              <span class="choice-copy-wrap">
+                <span class="choice-title">Article only</span>
+                <span class="choice-copy">Best for blogs, docs, and long-form pages.</span>
+              </span>
+              <span class="choice-toggle" aria-hidden="true"></span>
+            </label>
+            <label class="choice-card">
+              <input type="radio" name="mode" value="manual" />
+              <span class="choice-copy-wrap">
+                <span class="choice-title">Manual selection</span>
+                <span class="choice-copy">Pick the exact content block on app-like pages.</span>
+              </span>
+              <span class="choice-toggle" aria-hidden="true"></span>
+            </label>
+            <label class="choice-card">
+              <input type="radio" name="mode" value="page" />
+              <span class="choice-copy-wrap">
+                <span class="choice-title">Whole page</span>
+                <span class="choice-copy">Force the effect across readable blocks site-wide.</span>
+              </span>
+              <span class="choice-toggle" aria-hidden="true"></span>
+            </label>
+          </div>
+        </section>
 
-      <label class="stack">
-        <span>Letter spacing</span>
-        <input id="letterSpacing" type="range" min="0" max="0.08" step="0.01" />
-      </label>
+        <section id="fallbackPanel" class="panel fallback-panel hidden">
+          <p class="section-title">This page needs a nudge</p>
+          <p class="status-text">The detector is not confident this page has a single article container.</p>
+          <div class="actions">
+            <button id="useDetected" type="button" class="ghost">Use detected content</button>
+            <button id="pickManually" type="button" class="ghost">Pick manually</button>
+            <button id="forcePage" type="button" class="ghost">Force page</button>
+          </div>
+        </section>
 
-      <div class="actions">
-        <button id="apply" type="button">Apply</button>
-        <button id="reset" type="button" class="ghost">Reset</button>
-      </div>
+        <div class="actions">
+          <button id="apply" type="button">Apply to article</button>
+          <button id="reset" type="button" class="ghost">Reset current tab</button>
+        </div>
 
-      <p class="hint">This tool is a reading aid and not a medical treatment.</p>
+        <p class="hint">
+          Use <strong>Article only</strong> for blogs and docs, and <strong>Manual selection</strong> for feeds like LinkedIn.
+        </p>
+      </section>
+
+      <section id="panelSettings" class="tab-panel hidden">
+        <section class="panel">
+          <p class="section-title">Persistence</p>
+          <div class="inline-options" role="radiogroup" aria-label="Persistence">
+            <label class="pill-option">
+              <input type="radio" name="persistence" value="tab" checked />
+              <span>This tab</span>
+            </label>
+            <label class="pill-option">
+              <input type="radio" name="persistence" value="site" />
+              <span>This site</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel controls">
+          <label class="stack">
+            <span>Word emphasis <strong id="intensityValue">40%</strong></span>
+            <input id="intensity" type="range" min="20" max="70" step="5" />
+          </label>
+
+          <label class="stack">
+            <span>Line spacing <strong id="lineHeightValue">1.6</strong></span>
+            <input id="lineHeight" type="range" min="1.2" max="2" step="0.1" />
+          </label>
+
+          <label class="stack">
+            <span>Letter spacing <strong id="letterSpacingValue">0.02em</strong></span>
+            <input id="letterSpacing" type="range" min="0" max="0.08" step="0.01" />
+          </label>
+        </section>
+
+        <section class="panel analytics-panel">
+          <div class="status-line">
+            <div>
+              <p class="section-title analytics-title">Privacy-safe analytics</p>
+              <p class="status-text analytics-copy">Aggregate usage only. No page text or raw URLs.</p>
+            </div>
+            <label class="switch" aria-label="Enable analytics">
+              <input id="analyticsEnabled" type="checkbox" />
+              <span class="switch-ui" aria-hidden="true"></span>
+            </label>
+          </div>
+          <div id="installNotice" class="notice hidden">
+            Analytics are enabled by default. You can switch them off here at any time.
+          </div>
+          <p id="analyticsSummary" class="microcopy">Analytics are off.</p>
+          <div id="analyticsStats" class="stats-grid hidden">
+            <div class="stat-card">
+              <span class="stat-value" id="statApplies">0</span>
+              <span class="stat-label">Applies</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="statSites">0</span>
+              <span class="stat-label">Sites</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="statPages">0</span>
+              <span class="stat-label">Pages</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="statArticleMode">0</span>
+              <span class="stat-label">Article mode</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="statManualMode">0</span>
+              <span class="stat-label">Manual mode</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="statPageMode">0</span>
+              <span class="stat-label">Whole page</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="actions secondary-actions">
+          <button id="clearSite" type="button" class="ghost hidden">Clear site rule</button>
+        </div>
+      </section>
+
+      <p class="payoff">
+        Made with AI & &#129293; by <a href="https://kejsancoku.com/" target="_blank" rel="noreferrer">Kejsan Coku</a>
+      </p>
     </main>
     <script src="popup.js"></script>
   </body>

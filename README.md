@@ -1,30 +1,59 @@
 # ADHD Focus Reader
 
-Chrome extension MVP for making dense article text easier to scan by bolding the first part of each word and slightly adjusting page typography.
+Chrome extension for applying a focus-reading treatment to article text, a manually selected content block, or readable page sections without blindly rewriting every label on the page.
 
-## Features
+## What changed in v2
 
-- Toggle the reader on or off from the popup
-- Adjust emphasis intensity
-- Increase line height and letter spacing
-- Restore original text when disabled
-- Re-apply the effect to dynamically inserted content
+- `Article only` is the default mode
+- `Manual selection` is available for feeds and app-like pages
+- `Whole page` is still available as an explicit override
+- `This tab` and `This site` now behave separately
+- Page analysis warns when article detection confidence is low
+- Reset only affects the current tab session
+- Optional analytics are aggregate-only and off by default
 
-## Files
+## Modes
 
-- `manifest.json` contains the Manifest V3 setup
-- `popup.html`, `popup.css`, and `popup.js` power the extension controls
-- `content.js` and `content.css` apply the reading mode on webpages
+- `Article only`: detects a likely reading container and applies the effect there
+- `Manual selection`: lets you hover and click a content block to target it precisely
+- `Whole page`: applies only to readable text blocks, not a raw full-body rewrite
 
-## Load in Chrome
+## Persistence
+
+- `This tab`: saved only for the current browser tab session
+- `This site`: remembered for the hostname and auto-applied on future pages from that site
+
+## Privacy-safe analytics
+
+- Enabled by default and announced on first install
+- Controlled at any time from the popup analytics toggle
+- Visible inside the popup as local usage totals and mode/site/page counts
+- Tracks aggregate counts such as applies, resets, modes used, and counts of unique sites/pages
+- Uses local salted hashes for distinct-site and distinct-page counts
+- Does not store or transmit raw URLs, page text, or selected content
+
+## Local install
 
 1. Open `chrome://extensions`
 2. Turn on `Developer mode`
 3. Click `Load unpacked`
 4. Choose the `adhd-focus-reader-extension` folder
 
-## Notes
+## Suggested test pages
 
-- This MVP avoids inputs, buttons, code blocks, and hidden content.
-- It currently transforms visible page text in place rather than isolating only the main article.
-- A next improvement would be an article-only mode using a readability pass.
+- LinkedIn feed for `Manual selection`
+- Division5 blog posts for `Article only`
+- The Local Stack blog posts for `Article only`
+
+## Known limitations
+
+- Detection is heuristic-based, so some custom layouts may still need manual selection
+- Chrome internal pages and some extension pages do not allow content scripts
+- Site rules are remembered by hostname, not by individual path patterns
+
+## Keyboard shortcut
+
+- `Ctrl+Shift+Y` on Windows/Linux
+- `Command+Shift+Y` on macOS
+
+This starts manual selection on the active tab when the page supports content scripts.
